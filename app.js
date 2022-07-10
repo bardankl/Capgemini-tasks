@@ -1,3 +1,5 @@
+// did you written a lot of python code ? where is all yours  semicolons ?
+// puting semicolons at the end of line you helping js to understand that expression is eded
 let isTodoCardBeingEdited = false
 let todoCardBeingEdited
 const CLASS_NAMES = {
@@ -13,6 +15,7 @@ const CLASS_NAMES = {
 }
 
 const editTodo = (e) => {
+  // whats happend if we add additional input in our form ? ) It's bad practice to work with indexes, if its not tuple ;)
   todoCardBeingEdited.querySelector(`.${CLASS_NAMES.todoCardTitle}`).innerText =
     e.target[0].value
   todoCardBeingEdited.querySelector(`.${CLASS_NAMES.todoCardBody}`).innerText =
