@@ -1,6 +1,6 @@
 import { useAppDispatch } from "../hooks"
 import { startEditingTodo } from "../features/todoForm/todoFormSlice"
-import { completeTodo } from "../features/todoContainer/todoContainerSlice"
+import { completeTheTodo } from "../features/todoContainer/todoContainerSlice"
 
 type TodoObject = {
   title: string
@@ -16,7 +16,7 @@ const TodoCard = ({ todo }: TodoCardProps) => {
   const dispatch = useAppDispatch()
   return (
     <div
-      className={"todo-card " + (todo.isComplete && "todo-card--complete")}
+      className={"todo-card " + (todo.isComplete && "todo-card--complete")} // adding classname "todo-card--complete" based on the todo element's "isComplete" flag
       key={todo.id}
     >
       <div className='todo-card-text'>
@@ -26,7 +26,7 @@ const TodoCard = ({ todo }: TodoCardProps) => {
       <div className='todo-card-buttons'>
         <button
           onClick={(e) => {
-            dispatch(startEditingTodo(todo))
+            dispatch(startEditingTodo(todo)) // dispatching action "startEditingTodo" to start editing the TODO
           }}
           className='todo-card-button edit-button'
         >
@@ -34,7 +34,7 @@ const TodoCard = ({ todo }: TodoCardProps) => {
         </button>
         <button
           onClick={(e) => {
-            dispatch(completeTodo({ id: todo.id }))
+            dispatch(completeTheTodo({ id: todo.id })) // dispatching action "completeTheTodo" to complete the TODO
           }}
           className='todo-card-button complete-button'
         >

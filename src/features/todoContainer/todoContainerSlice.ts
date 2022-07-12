@@ -16,21 +16,23 @@ const todoContainerSlice = createSlice({
   name: "todoContainer",
   initialState,
   reducers: {
-    completeTodo: (state, action) => {
+    completeTheTodo: (state, action) => {
       const idOfTodoToBeCompleted = action.payload.id
+      // mapping over todos in search for the one that is to be completed
       state.todos = state.todos.map((todo) =>
         todo.id === idOfTodoToBeCompleted
           ? {
               ...todo,
-              isComplete: true,
+              isComplete: true, // setting the completed todo's "isComplete" flag's value to true, so that when TodoCard component is displayed it gets "todo-card--complete" className and its background is set to green
             }
           : todo
       )
     },
-    createTodo: (state, action) => {
-      const idForNewTodo = state.todos[state.todos.length - 1].id + 1
+    createATodo: (state, action) => {
+      const idForNewTodo = state.todos[state.todos.length - 1].id + 1 // setting idForNewTodo as that of the last todo + 1
       state.todos = [
-        ...state.todos,
+        ...state.todos, // leaving todos as they were
+        //and adding a new one to the end
         {
           title: action.payload.newTodoTitle,
           body: action.payload.newTodoBody,
@@ -39,23 +41,28 @@ const todoContainerSlice = createSlice({
         },
       ]
     },
-    editTodo: (state, action) => {
+    editTheTodo: (state, action) => {
+      // setting new state.todos
       state.todos = [
-        ...state.todos.map((todo) =>
-          todo.id === action.payload.idOfTodoBeingEdited
-            ? {
-                title: action.payload.newTodoTitle,
-                body: action.payload.newTodoBody,
-                id: todo.id,
-                isComplete: todo.isComplete,
-              }
-            : todo
+        // mapping over todos in search for the one that is to be edited
+        ...state.todos.map(
+          (todo) =>
+            todo.id === action.payload.idOfTodoBeingEdited
+              ? //setting a new one in place, leaving the "id" and "isComplete" properties as they were
+                {
+                  title: action.payload.newTodoTitle,
+                  body: action.payload.newTodoBody,
+                  id: todo.id,
+                  isComplete: todo.isComplete,
+                }
+              : todo // for the rest of the todos we return them back as they were
         ),
       ]
     },
   },
 })
 
-export const { completeTodo, createTodo, editTodo } = todoContainerSlice.actions
+export const { completeTheTodo, createATodo, editTheTodo } =
+  todoContainerSlice.actions
 
 export default todoContainerSlice.reducer

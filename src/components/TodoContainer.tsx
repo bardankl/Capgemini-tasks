@@ -8,6 +8,7 @@ const TodoContainer = () => {
     <div className='todo-container'>
       <h2>Todos:</h2>
       {todos.map(
+        // mapping over todos
         (
           todo: {
             title: string
@@ -15,7 +16,7 @@ const TodoContainer = () => {
             id: number
             isComplete: boolean
           },
-          index: Key | null | undefined
+          index: Key
         ) => (
           <TodoCard key={index} todo={todo} />
         )
