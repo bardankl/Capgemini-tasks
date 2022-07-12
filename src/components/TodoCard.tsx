@@ -11,10 +11,8 @@ type TodoObject = {
 
 type TodoCardProps = {
   todo: TodoObject
-  // startEditing: Function
-  // completeTodo: Function
 }
-const TodoCard = ({ todo /*startEditing  completeTodo*/ }: TodoCardProps) => {
+const TodoCard = ({ todo }: TodoCardProps) => {
   const dispatch = useAppDispatch()
   return (
     <div
@@ -29,7 +27,6 @@ const TodoCard = ({ todo /*startEditing  completeTodo*/ }: TodoCardProps) => {
         <button
           onClick={(e) => {
             dispatch(startEditingTodo(todo))
-            // startEditing(todo)
           }}
           className='todo-card-button edit-button'
         >
@@ -37,8 +34,7 @@ const TodoCard = ({ todo /*startEditing  completeTodo*/ }: TodoCardProps) => {
         </button>
         <button
           onClick={(e) => {
-            dispatch(completeTodo(todo.id))
-            // completeTodo(todo.id)
+            dispatch(completeTodo({ id: todo.id }))
           }}
           className='todo-card-button complete-button'
         >

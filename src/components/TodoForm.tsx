@@ -1,25 +1,38 @@
 import React, { FormEventHandler } from "react"
-
-interface ConfigObject {
-  placeholderName: string
-  propName: string
-  label: string
-  classNameSuffix: string
-}
+import { useAppDispatch, useAppSelector } from "../hooks"
+import {
+  changeFormTitleInputValue,
+  changeFormBodyInputValue,
+} from "../features/todoForm/todoFormSlice"
 
 type FormInputProps = {
-  newTodoValues: object
-  config: Array<ConfigObject>
-  changeState: Function
   onSubmit: FormEventHandler<HTMLFormElement>
-  isTodoCardBeingEdited: boolean
 }
 
+const config = [
+  {
+    placeholderName: "Title",
+    propName: "newTodoTitle",
+    label: "Todo Title",
+    classNameSuffix: "title",
+    reduxAction: changeFormTitleInputValue,
+  },
+  {
+    placeholderName: "Body",
+    propName: "newTodoBody",
+    label: "Todo Body",
+    classNameSuffix: "body",
+    reduxAction: changeFormBodyInputValue,
+  },
+]
+
 const TodoForm = React.forwardRef<HTMLInputElement, FormInputProps>(
-  (
-    { newTodoValues, config, /*changeState,*/ onSubmit, isTodoCardBeingEdited },
-    ref
-  ) => {
+  ({ onSubmit }, ref) => {
+    const dispatch = useAppDispatch()
+    const { newTodoTitle, newTodoBody, isTodoCardBeingEdited } = useAppSelector(
+      (state) => state.todoForm
+    )
+    const newTodoValues = { newTodoTitle, newTodoBody }
     return (
       <header>
         <form action='' className='create-todo-form' onSubmit={onSubmit}>
@@ -35,8 +48,10 @@ const TodoForm = React.forwardRef<HTMLInputElement, FormInputProps>(
                 value={
                   newTodoValues[input.propName as keyof typeof newTodoValues]
                 }
-                onChange={(e) => changeState(e.target.value, input.propName)}
-                // onChange={(e) => changeState(e.target.value, input.propName)}
+                onChange={(e) => {
+                  const newInputValue = e.target.value
+                  dispatch(input.reduxAction({ newInputValue }))
+                }}
                 placeholder={input.placeholderName}
                 {...(input.propName === "newTodoTitle" && {
                   ref: ref,

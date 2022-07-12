@@ -27,9 +27,35 @@ const todoContainerSlice = createSlice({
           : todo
       )
     },
+    createTodo: (state, action) => {
+      const idForNewTodo = state.todos[state.todos.length - 1].id + 1
+      state.todos = [
+        ...state.todos,
+        {
+          title: action.payload.newTodoTitle,
+          body: action.payload.newTodoBody,
+          id: idForNewTodo,
+          isComplete: false,
+        },
+      ]
+    },
+    editTodo: (state, action) => {
+      state.todos = [
+        ...state.todos.map((todo) =>
+          todo.id === action.payload.idOfTodoBeingEdited
+            ? {
+                title: action.payload.newTodoTitle,
+                body: action.payload.newTodoBody,
+                id: todo.id,
+                isComplete: todo.isComplete,
+              }
+            : todo
+        ),
+      ]
+    },
   },
 })
 
-export const { completeTodo } = todoContainerSlice.actions
+export const { completeTodo, createTodo, editTodo } = todoContainerSlice.actions
 
 export default todoContainerSlice.reducer
