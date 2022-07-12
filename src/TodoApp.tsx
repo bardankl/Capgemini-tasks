@@ -1,29 +1,36 @@
 import { useRef, useState } from "react"
-import TodoContainer from "./TodoContainer"
-import TodoForm from "./TodoForm"
+import TodoContainer from "./components/TodoContainer"
+import TodoForm from "./components/TodoForm"
+import { useAppSelector } from "./hooks"
 
 const TodoApp = () => {
-  const initialState = {
-    newTodoTitle: "",
-    newTodoBody: "",
-    todos: [
-      {
-        title:
-          "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Eveniet explicabo expedita, suscipit cum tempore molestias porro facilis dolorum rem, nulla quod enim qui inventore reprehenderit et aspernatur ratione eaque nam?",
-        body: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Dignissimos, alias aperiam quia fugiat, enim vel omnis pariatur modi quo aut iste, officia totam ea adipisci earum natus. Rerum, saepe culpa?",
-        id: 0,
-        isComplete: false,
-      },
-    ],
-    isTodoCardBeingEdited: false,
-    idOfTodoBeingEdited: null as number | null,
-  }
+  const {
+    newTodoTitle,
+    newTodoBody,
+    isTodoCardBeingEdited,
+    idOfTodoBeingEdited,
+  } = useAppSelector((state) => state.todoForm)
+  // const initialState = {
+  //   newTodoTitle: "",
+  //   newTodoBody: "",
+  // todos: [
+  //   {
+  //     title:
+  //       "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Eveniet explicabo expedita, suscipit cum tempore molestias porro facilis dolorum rem, nulla quod enim qui inventore reprehenderit et aspernatur ratione eaque nam?",
+  //     body: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Dignissimos, alias aperiam quia fugiat, enim vel omnis pariatur modi quo aut iste, officia totam ea adipisci earum natus. Rerum, saepe culpa?",
+  //     id: 0,
+  //     isComplete: false,
+  //   },
+  // ],
+  //   isTodoCardBeingEdited: false,
+  //   idOfTodoBeingEdited: null as number | null,
+  // }
 
-  const [state, setState] = useState(initialState)
+  // const [state, setState] = useState(initialState)
   const titleInputRef = useRef<HTMLInputElement>(null)
-  const changeState = (value: string | boolean | number, prop: string) => {
-    setState({ ...state, [prop]: value })
-  }
+  // const changeState = (value: string | boolean | number, prop: string) => {
+  //   setState({ ...state, [prop]: value })
+  // }
 
   const config = [
     {
@@ -31,12 +38,14 @@ const TodoApp = () => {
       propName: "newTodoTitle",
       label: "Todo Title",
       classNameSuffix: "title",
+      reduxActionName: "",
     },
     {
       placeholderName: "Body",
       propName: "newTodoBody",
       label: "Todo Body",
       classNameSuffix: "body",
+      reduxActionName: "",
     },
   ]
 
@@ -90,37 +99,37 @@ const TodoApp = () => {
     })
   }
 
-  const startEditing = (todo: { title: string; body: string; id: number }) => {
-    focusTitleInput()
-    setState({
-      newTodoTitle: todo.title,
-      newTodoBody: todo.body,
-      todos: [...state.todos],
-      isTodoCardBeingEdited: true,
-      idOfTodoBeingEdited: todo.id,
-    })
-  }
+  // const startEditing = (todo: { title: string; body: string; id: number }) => {
+  //   focusTitleInput()
+  //   setState({
+  //     newTodoTitle: todo.title,
+  //     newTodoBody: todo.body,
+  //     todos: [...state.todos],
+  //     isTodoCardBeingEdited: true,
+  //     idOfTodoBeingEdited: todo.id,
+  //   })
+  // }
 
   const focusTitleInput = () => {
     titleInputRef.current?.focus()
     // titleInputRef.current!.focus()
   }
 
-  const completeTodo = (idOfTodoToBeCompleted: number) => {
-    setState({
-      ...state,
-      todos: [
-        ...state.todos.map((todo) =>
-          todo.id === idOfTodoToBeCompleted
-            ? {
-                ...todo,
-                isComplete: true,
-              }
-            : todo
-        ),
-      ],
-    })
-  }
+  // const completeTodo = (idOfTodoToBeCompleted: number) => {
+  //   setState({
+  //     ...state,
+  //     todos: [
+  //       ...state.todos.map((todo) =>
+  //         todo.id === idOfTodoToBeCompleted
+  //           ? {
+  //               ...todo,
+  //               isComplete: true,
+  //             }
+  //           : todo
+  //       ),
+  //     ],
+  //   })
+  // }
 
   return (
     <>
@@ -131,14 +140,14 @@ const TodoApp = () => {
           newTodoBody: state.newTodoBody,
         }}
         config={config}
-        changeState={changeState}
+        // changeState={changeState}
         onSubmit={submitForm}
         isTodoCardBeingEdited={state.isTodoCardBeingEdited}
       ></TodoForm>
       <TodoContainer
-        todos={state.todos}
-        startEditing={startEditing}
-        completeTodo={completeTodo}
+      // todos={state.todos}
+      // startEditing={startEditing}
+      // completeTodo={completeTodo}
       ></TodoContainer>
     </>
   )

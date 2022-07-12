@@ -17,7 +17,7 @@ type FormInputProps = {
 
 const TodoForm = React.forwardRef<HTMLInputElement, FormInputProps>(
   (
-    { newTodoValues, config, changeState, onSubmit, isTodoCardBeingEdited },
+    { newTodoValues, config, /*changeState,*/ onSubmit, isTodoCardBeingEdited },
     ref
   ) => {
     return (
@@ -36,6 +36,7 @@ const TodoForm = React.forwardRef<HTMLInputElement, FormInputProps>(
                   newTodoValues[input.propName as keyof typeof newTodoValues]
                 }
                 onChange={(e) => changeState(e.target.value, input.propName)}
+                // onChange={(e) => changeState(e.target.value, input.propName)}
                 placeholder={input.placeholderName}
                 {...(input.propName === "newTodoTitle" && {
                   ref: ref,

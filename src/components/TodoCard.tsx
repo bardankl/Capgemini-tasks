@@ -1,3 +1,7 @@
+import { useAppDispatch } from "../hooks"
+import { startEditingTodo } from "../features/todoForm/todoFormSlice"
+import { completeTodo } from "../features/todoContainer/todoContainerSlice"
+
 type TodoObject = {
   title: string
   body: string
@@ -7,10 +11,11 @@ type TodoObject = {
 
 type TodoCardProps = {
   todo: TodoObject
-  startEditing: Function
-  completeTodo: Function
+  // startEditing: Function
+  // completeTodo: Function
 }
-const TodoCard = ({ todo, startEditing, completeTodo }: TodoCardProps) => {
+const TodoCard = ({ todo /*startEditing  completeTodo*/ }: TodoCardProps) => {
+  const dispatch = useAppDispatch()
   return (
     <div
       className={"todo-card " + (todo.isComplete && "todo-card--complete")}
@@ -23,15 +28,19 @@ const TodoCard = ({ todo, startEditing, completeTodo }: TodoCardProps) => {
       <div className='todo-card-buttons'>
         <button
           onClick={(e) => {
-            startEditing(todo)
+            dispatch(startEditingTodo(todo))
+            // startEditing(todo)
           }}
           className='todo-card-button edit-button'
         >
           Edit
         </button>
         <button
+          onClick={(e) => {
+            dispatch(completeTodo(todo.id))
+            // completeTodo(todo.id)
+          }}
           className='todo-card-button complete-button'
-          onClick={(e) => completeTodo(todo.id)}
         >
           Complete
         </button>
