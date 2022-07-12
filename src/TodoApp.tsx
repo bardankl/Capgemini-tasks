@@ -16,11 +16,12 @@ const TodoApp = () => {
       },
     ],
     isTodoCardBeingEdited: false,
-    idOfTodoBeingEdited: null,
+    idOfTodoBeingEdited: null as number | null,
   }
 
   const [state, setState] = useState(initialState)
-  const changeState = (value, prop) => {
+  const titleInputRef = useRef<HTMLInputElement>(null)
+  const changeState = (value: string | boolean | number, prop: string) => {
     setState({ ...state, [prop]: value })
   }
 
@@ -39,7 +40,7 @@ const TodoApp = () => {
     },
   ]
 
-  const submitForm = (e) => {
+  const submitForm = (e: React.ChangeEvent<HTMLFormElement>) => {
     e.preventDefault()
 
     if (state.isTodoCardBeingEdited) {
@@ -66,9 +67,11 @@ const TodoApp = () => {
     }
   }
 
-  const createTodo = (e) => {
-    const todoTitle = e.target[0].value
-    const todoBody = e.target[1].value
+  const createTodo = (e: React.ChangeEvent<HTMLFormElement>) => {
+    const todoTitleInput = e.target[0] as HTMLInputElement
+    const todoBodyInput = e.target[1] as HTMLInputElement
+    const todoTitle = todoTitleInput.value
+    const todoBody = todoBodyInput.value
     const idForNewTodo = state.todos[state.todos.length - 1].id + 1
     setState({
       newTodoTitle: "",
@@ -87,7 +90,8 @@ const TodoApp = () => {
     })
   }
 
-  const startEditing = (todo) => {
+  const startEditing = (todo: { title: string; body: string; id: number }) => {
+    focusTitleInput()
     setState({
       newTodoTitle: todo.title,
       newTodoBody: todo.body,
@@ -97,7 +101,12 @@ const TodoApp = () => {
     })
   }
 
-  const completeTodo = (idOfTodoToBeCompleted) => {
+  const focusTitleInput = () => {
+    titleInputRef.current?.focus()
+    // titleInputRef.current!.focus()
+  }
+
+  const completeTodo = (idOfTodoToBeCompleted: number) => {
     setState({
       ...state,
       todos: [
@@ -112,9 +121,11 @@ const TodoApp = () => {
       ],
     })
   }
+
   return (
     <>
       <TodoForm
+        ref={titleInputRef}
         newTodoValues={{
           newTodoTitle: state.newTodoTitle,
           newTodoBody: state.newTodoBody,

@@ -1,4 +1,16 @@
-const TodoCard = ({ todo, startEditing, completeTodo }) => {
+type TodoObject = {
+  title: string
+  body: string
+  id: number
+  isComplete: boolean
+}
+
+type TodoCardProps = {
+  todo: TodoObject
+  startEditing: Function
+  completeTodo: Function
+}
+const TodoCard = ({ todo, startEditing, completeTodo }: TodoCardProps) => {
   return (
     <div
       className={"todo-card " + (todo.isComplete && "todo-card--complete")}
