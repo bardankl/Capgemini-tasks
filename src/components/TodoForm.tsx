@@ -1,5 +1,5 @@
 import React, { FormEventHandler } from "react"
-import { useAppDispatch, useAppSelector } from "../hooks"
+import { useAppDispatch, useAppSelector } from "../shared/utils/hooks"
 import {
   changeFormTitleInputValue,
   changeFormBodyInputValue,

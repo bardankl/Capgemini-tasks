@@ -1,4 +1,4 @@
-import { useAppDispatch } from "../hooks"
+import { useAppDispatch } from "../shared/utils/hooks"
 import { startEditingTodo } from "../features/todoForm/todoFormSlice"
 import { completeTheTodo } from "../features/todoContainer/todoContainerSlice"
 

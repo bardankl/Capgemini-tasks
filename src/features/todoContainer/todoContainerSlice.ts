@@ -1,4 +1,7 @@
-import { createSlice } from "@reduxjs/toolkit"
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit"
+import api from "../../shared/utils/api"
+
+const endpoint = "/todos"
 
 const initialState = {
   todos: [
@@ -10,7 +13,61 @@ const initialState = {
       isComplete: false,
     },
   ],
+  isLoading: false,
 }
+
+export const loadTodosFromBackend = createAsyncThunk(
+  "todoContainer/loadTodos",
+  async (name, thunkAPI) => {
+    // if (thunkAPI.getState().contactForm.questionAnsweredCorrectly) {
+    //   return thunkAPI.rejectWithValue("answer is right")
+    // }
+    try {
+      const resp = await api.get(`${endpoint}`)
+      return resp.data
+    } catch (error) {
+      return thunkAPI.rejectWithValue("something went wrong")
+    }
+  }
+)
+
+export const createATodo = createAsyncThunk(
+  "todoContainer/createATodo",
+  async (newTodoTitleAndBody: { title: string; body: string }, thunkAPI) => {
+    const newTodo = { ...newTodoTitleAndBody, isComplete: false }
+
+    try {
+      const resp = await api.post(endpoint, newTodo)
+      return resp.data
+    } catch (error) {
+      return thunkAPI.rejectWithValue("something went wrong")
+    }
+  }
+)
+
+export const editTheTodo = createAsyncThunk(
+  "todoContainer/editTheTodo",
+  async (
+    editedTodoIdAndNewTitleAndBody: {
+      title: string
+      body: string
+      idOfTodoBeingEdited: number
+    },
+    thunkAPI
+  ) => {
+    const { idOfTodoBeingEdited } = editedTodoIdAndNewTitleAndBody
+    const { title, body } = editedTodoIdAndNewTitleAndBody
+    try {
+      const resp = await api.patch(`${endpoint}/${idOfTodoBeingEdited}`, {
+        title,
+        body,
+      })
+      return resp.data
+    } catch (error) {
+      return thunkAPI.rejectWithValue("something went wrong")
+    }
+  }
+)
 
 const todoContainerSlice = createSlice({
   name: "todoContainer",
@@ -28,41 +85,43 @@ const todoContainerSlice = createSlice({
           : todo
       )
     },
-    createATodo: (state, action) => {
-      const idForNewTodo = state.todos[state.todos.length - 1].id + 1 // setting idForNewTodo as that of the last todo + 1
-      state.todos = [
-        ...state.todos, // leaving todos as they were
-        //and adding a new one to the end
-        {
-          title: action.payload.newTodoTitle,
-          body: action.payload.newTodoBody,
-          id: idForNewTodo,
-          isComplete: false,
-        },
-      ]
-    },
-    editTheTodo: (state, action) => {
-      // setting new state.todos
-      state.todos = [
-        // mapping over todos in search for the one that is to be edited
-        ...state.todos.map(
-          (todo) =>
-            todo.id === action.payload.idOfTodoBeingEdited
-              ? //setting a new one in place, leaving the "id" and "isComplete" properties as they were
-                {
-                  title: action.payload.newTodoTitle,
-                  body: action.payload.newTodoBody,
-                  id: todo.id,
-                  isComplete: todo.isComplete,
-                }
-              : todo // for the rest of the todos we return them back as they were
-        ),
-      ]
-    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(loadTodosFromBackend.pending, (state) => {
+        state.isLoading = true
+      })
+      .addCase(loadTodosFromBackend.fulfilled, (state, action) => {
+        state.isLoading = false
+        state.todos = action.payload
+      })
+      .addCase(loadTodosFromBackend.rejected, (state) => {
+        state.isLoading = false
+      })
+      .addCase(createATodo.pending, (state) => {
+        state.isLoading = true
+      })
+      .addCase(createATodo.fulfilled, (state, action) => {
+        state.isLoading = false
+        state.todos = [...state.todos, action.payload]
+      })
+      .addCase(createATodo.rejected, (state) => {
+        state.isLoading = false
+      })
+      .addCase(editTheTodo.pending, (state) => {
+        state.isLoading = true
+      })
+      .addCase(editTheTodo.fulfilled, (state, action) => {
+        state.isLoading = false
+
+        state.todos = [...state.todos, action.payload]
+      })
+      .addCase(editTheTodo.rejected, (state) => {
+        state.isLoading = false
+      })
   },
 })
 
-export const { completeTheTodo, createATodo, editTheTodo } =
-  todoContainerSlice.actions
+export const { completeTheTodo } = todoContainerSlice.actions
 
 export default todoContainerSlice.reducer

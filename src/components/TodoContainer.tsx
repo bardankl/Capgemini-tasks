@@ -1,26 +1,36 @@
 import TodoCard from "./TodoCard"
-import { useAppSelector } from "../hooks"
-import { Key } from "react"
+import { useAppDispatch, useAppSelector } from "../shared/utils/hooks"
+import { Key, useEffect } from "react"
+
+import { loadTodosFromBackend } from "../features/todoContainer/todoContainerSlice"
 
 const TodoContainer = () => {
+  const dispatch = useAppDispatch()
+  const LoadTodos = () => {
+    dispatch(loadTodosFromBackend())
+  }
   const { todos } = useAppSelector((state) => state.todoContainer)
+  useEffect(() => {
+    LoadTodos()
+    console.log("todos.length", todos.length)
+  }, [todos.length])
   return (
     <div className='todo-container'>
       <h2>Todos:</h2>
-      {todos.map(
-        // mapping over todos
-        (
-          todo: {
-            title: string
-            body: string
-            id: number
-            isComplete: boolean
-          },
-          index: Key
-        ) => (
-          <TodoCard key={index} todo={todo} />
-        )
-      )}
+      {todos.length > 1 &&
+        todos.map(
+          // mapping over todos
+          (
+            todo: {
+              title: string
+              body: string
+              id: number
+              isComplete: boolean
+            },
+            index: Key
+          ) => <TodoCard key={index} todo={todo} />
+        )}
+      {todos.length === 1 && <TodoCard key={0} todo={todos[0]} />}
     </div>
   )
 }

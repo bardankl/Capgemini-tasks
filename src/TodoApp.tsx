@@ -1,7 +1,7 @@
 import { useRef, useEffect } from "react"
 import TodoContainer from "./components/TodoContainer"
 import TodoForm from "./components/TodoForm"
-import { useAppDispatch, useAppSelector } from "./hooks"
+import { useAppDispatch, useAppSelector } from "./shared/utils/hooks"
 import {
   createATodo,
   editTheTodo,
@@ -33,10 +33,17 @@ const TodoApp = () => {
     const newTodoBody = newTodoBodyInput.value // split into two lines this way for Typescript, extracting value of the input
 
     if (isTodoCardBeingEdited) {
-      dispatch(editTheTodo({ newTodoTitle, newTodoBody, idOfTodoBeingEdited })) // dispatching "editTheTodo" action, passing todo's edited title, todo's edited body and its id
+      dispatch(
+        editTheTodo({
+          title: newTodoTitle,
+          body: newTodoBody,
+          idOfTodoBeingEdited: idOfTodoBeingEdited as number,
+        })
+      ) // dispatching "editTheTodo" action, passing todo's edited title, todo's edited body and its id
       dispatch(finishEdit())
     } else {
-      dispatch(createATodo({ newTodoTitle, newTodoBody })) // dispatching "createATodo" action, passing the new todo's title and body
+      // dispatch(createATodo())
+      dispatch(createATodo({ title: newTodoTitle, body: newTodoBody })) // dispatching "createATodo" action, passing the new todo's title and body
     }
     dispatch(clearInputs()) // clear inputs both after saving edited todo as well as after creating a new todo
   }
