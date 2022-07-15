@@ -69,23 +69,45 @@ export const editTheTodo = createAsyncThunk(
   }
 )
 
+export const completeTheTodo = createAsyncThunk(
+  "todoContainer/completeTheTodo",
+  async (
+    isTodoCompleteAndIdOfTodo: {
+      idOfTodoBeingCompleted: number
+      isTodoAlreadyComplete: boolean
+    },
+
+    thunkAPI
+  ) => {
+    const { idOfTodoBeingCompleted, isTodoAlreadyComplete } =
+      isTodoCompleteAndIdOfTodo
+    try {
+      const resp = await api.patch(`${endpoint}/${idOfTodoBeingCompleted}`, {
+        isComplete: !isTodoAlreadyComplete,
+      })
+      return resp.data
+    } catch (error) {
+      return thunkAPI.rejectWithValue("something went wrong")
+    }
+  }
+)
+
+export const deleteTheTodo = createAsyncThunk(
+  "todoContainer/deleteTheTodo",
+  async (idOfTodoBeingDeleted: number, thunkAPI) => {
+    try {
+      const resp = await api.delete(`${endpoint}/${idOfTodoBeingDeleted}`)
+      return resp.data
+    } catch (error) {
+      return thunkAPI.rejectWithValue("something went wrong")
+    }
+  }
+)
+
 const todoContainerSlice = createSlice({
   name: "todoContainer",
   initialState,
-  reducers: {
-    completeTheTodo: (state, action) => {
-      const idOfTodoToBeCompleted = action.payload.id
-      // mapping over todos in search for the one that is to be completed
-      state.todos = state.todos.map((todo) =>
-        todo.id === idOfTodoToBeCompleted
-          ? {
-              ...todo,
-              isComplete: true, // setting the completed todo's "isComplete" flag's value to true, so that when TodoCard component is displayed it gets "todo-card--complete" className and its background is set to green
-            }
-          : todo
-      )
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(loadTodosFromBackend.pending, (state) => {
@@ -113,15 +135,62 @@ const todoContainerSlice = createSlice({
       })
       .addCase(editTheTodo.fulfilled, (state, action) => {
         state.isLoading = false
-
-        state.todos = [...state.todos, action.payload]
+        // the part below is done so that we make the changes on the local state without doing unnecessary additional GET request
+        state.todos = [
+          // mapping over todos in search for the one that is to be edited,
+          ...state.todos.map(
+            (todo) =>
+              todo.id === action.payload.id
+                ? //setting a new one in place, leaving the "id" and "isComplete" properties as they were
+                  {
+                    title: action.payload.title,
+                    body: action.payload.body,
+                    id: todo.id,
+                    isComplete: todo.isComplete,
+                  }
+                : todo // for the rest of the todos we return them back as they were
+          ),
+        ]
       })
       .addCase(editTheTodo.rejected, (state) => {
+        state.isLoading = false
+      })
+      .addCase(completeTheTodo.pending, (state) => {
+        state.isLoading = true
+      })
+      .addCase(completeTheTodo.fulfilled, (state, action) => {
+        state.isLoading = false
+        // the part below is done so that we make the changes on the local state without doing unnecessary additional GET request
+        state.todos = state.todos.map((todo) =>
+          todo.id === action.payload.id
+            ? {
+                ...todo,
+                isComplete: action.payload.isComplete, // setting the completed todo's "isComplete" flag's value to the one of the document returned by the patch request
+              }
+            : todo
+        )
+      })
+      .addCase(completeTheTodo.rejected, (state) => {
+        state.isLoading = false
+      })
+      .addCase(deleteTheTodo.pending, (state) => {
+        state.isLoading = true
+      })
+      .addCase(deleteTheTodo.fulfilled, (state, action) => {
+        state.isLoading = false
+        // the part below is done so that we make the changes on the local state without doing unnecessary additional GET request
+        const idOfTodoBeingDeleted = action.meta.arg
+        state.todos = state.todos.filter(
+          // filtering out the deleted todo from the local state.todos array
+          (todo) => todo.id !== idOfTodoBeingDeleted
+        )
+      })
+      .addCase(deleteTheTodo.rejected, (state) => {
         state.isLoading = false
       })
   },
 })
 
-export const { completeTheTodo } = todoContainerSlice.actions
+// export const { completeTheTodo } = todoContainerSlice.actions
 
 export default todoContainerSlice.reducer

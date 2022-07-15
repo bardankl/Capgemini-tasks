@@ -10,13 +10,7 @@
       "id": 1,
       "title": "groceries",
       "body": "Buy potatoes",
-      "isComplete": false
-    },
-    {
-      "title": "asf",
-      "body": "fsg",
-      "isComplete": false,
-      "id": 2
+      "isComplete": true
     }
   ]
 }

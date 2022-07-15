@@ -9,15 +9,19 @@ const TodoContainer = () => {
   const LoadTodos = () => {
     dispatch(loadTodosFromBackend())
   }
-  const { todos } = useAppSelector((state) => state.todoContainer)
+  const { todos, isLoading } = useAppSelector((state) => state.todoContainer)
   useEffect(() => {
     LoadTodos()
     console.log("todos.length", todos.length)
-  }, [todos.length])
+  }, [])
+  // }, [todos.length])
   return (
     <div className='todo-container'>
       <h2>Todos:</h2>
-      {todos.length > 1 &&
+      {/* <h2 className="loading">Loading...</h2> */}
+      {isLoading && <h2 className='loading'>Loading...</h2>}
+      {!isLoading &&
+        todos.length > 1 &&
         todos.map(
           // mapping over todos
           (
@@ -30,7 +34,7 @@ const TodoContainer = () => {
             index: Key
           ) => <TodoCard key={index} todo={todo} />
         )}
-      {todos.length === 1 && <TodoCard key={0} todo={todos[0]} />}
+      {!isLoading && todos.length === 1 && <TodoCard key={0} todo={todos[0]} />}
     </div>
   )
 }
