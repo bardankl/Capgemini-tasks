@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit"
 
-interface ToDoFormState {
+interface ToDoFormState { // please store your types in separated fyle in same folder (if they refer to the same entity). If it reusable type, add it to shared/types
   newTodoTitle: string
   newTodoBody: string
   isTodoCardBeingEdited: boolean
