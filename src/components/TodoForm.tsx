@@ -5,11 +5,11 @@ import {
   changeFormBodyInputValue,
 } from "../features/todoForm/todoFormSlice"
 
-type FormInputProps = {
+type FormInputProps = { // same here separated file for type
   onSubmit: FormEventHandler<HTMLFormElement>
 }
 
-const config = [
+const config = [  // it's feature config, you can crete file constants in current folder. Put config in this file. And config should be typed
   {
     placeholderName: "Title",
     propName: "newTodoTitle",
